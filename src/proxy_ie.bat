@@ -1,13 +1,13 @@
 @echo off
 REM ============================================================================
 REM batch-name: proxy_ie.bat
-REM about: IEï¿½Ìƒvï¿½ï¿½ï¿½Lï¿½Vï¿½İ’è‚µï¿½Ä‚ï¿½ï¿½ï¿½ï¿½oï¿½bï¿½`
+REM about: IE‚ÌƒvƒƒLƒV‚ğİ’è‚µ‚Ä‚­‚ê‚éƒoƒbƒ`
 REM ============================================================================
 setlocal ENABLEDELAYEDEXPANSION
 cd /d %~dp0
 
 REM ========================================
-REM === ï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½Vï¿½[ï¿½Pï¿½ï¿½ï¿½X
+REM === ƒƒCƒ“ƒV[ƒPƒ“ƒX
 call :INIT
 call :INIT-INDIVIDUAL
 call :IE-PROXY-SETTING
@@ -15,12 +15,12 @@ call :IE-START
 call :NO-IE-PROXY-SETTING
 
 goto END-RTN
-REM === ï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½Vï¿½[ï¿½Pï¿½ï¿½ï¿½XEND
+REM === ƒƒCƒ“ƒV[ƒPƒ“ƒXEND
 REM ========================================
 
 
 REM ========================================
-REM === ï¿½oï¿½bï¿½`ï¿½Ì•Kï¿½{ï¿½Ïï¿½
+REM === ƒoƒbƒ`‚Ì•K{•Ï”
 :INIT
     set cmdName=%~n0
     set dateStamp=%date:/=%
@@ -33,17 +33,16 @@ REM === ï¿½oï¿½bï¿½`ï¿½Ì•Kï¿½{ï¿½Ïï¿½
 exit /b
 
 REM ========================================
-REM === ï¿½oï¿½bï¿½`ï¿½ÌŒÂ•Ê•Ïï¿½
+REM === ƒoƒbƒ`‚ÌŒÂ•Ê•Ï”
 :INIT-INDIVIDUAL
     call :USERID-SELECT
-    REM proxyServerï¿½ï¿½ï¿½ï¿½ï¿½
     set proxySrv=
     call :SELECT-CONNECT
 
 exit /b
 
 REM ========================================
-REM === ï¿½ï¿½ï¿½[ï¿½UIDï¿½Iï¿½ï¿½
+REM === ƒ†[ƒUID‘I‘ğ
 :USERID-SELECT
     echo *****************************************************************
     echo menu
@@ -54,7 +53,7 @@ REM === ï¿½ï¿½ï¿½[ï¿½UIDï¿½Iï¿½ï¿½
     echo 04:user04
     echo *****************************************************************
     set userIDselect=""
-    set /P userIDselect="ï¿½ï¿½ï¿½[ï¿½UIDï¿½ï¿½ï¿½ï¿½Í‚ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½[Ex:01]ï¿½F"
+    set /P userIDselect="ƒ†[ƒUID‚ğ“ü—Í‚µ‚Ä‚­‚¾‚³‚¢[Ex:01]F"
     if %userIDselect%==01 ( 
         set userID=user01
     ) else if %userIDselect%==02 (
@@ -65,14 +64,14 @@ REM === ï¿½ï¿½ï¿½[ï¿½UIDï¿½Iï¿½ï¿½
         set userID=user04
     ) else (
         cls
-        call %commonLogBat% %cmdName% ERROR ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½ï¿½[%userIDselect%]ï¿½Ìƒï¿½ï¿½[ï¿½Uï¿½Í“oï¿½^ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½
+        call %commonLogBat% %cmdName% ERROR ‘I‘ğ‚µ‚½[%userIDselect%]‚Ìƒ†[ƒU‚Í“o˜^‚³‚ê‚Ä‚¢‚Ü‚¹‚ñ
         goto USERID-SELECT
     )
     cls
 exit /b
 
 REM ========================================
-REM === ï¿½Ú‘ï¿½ï¿½ï¿½Iï¿½ï¿½
+REM === Ú‘±æ‘I‘ğ
 :SELECT-CONNECT
     echo *****************************************************************
     echo menu
@@ -81,7 +80,7 @@ REM === ï¿½Ú‘ï¿½ï¿½ï¿½Iï¿½ï¿½
     echo 01:yahoo                   https://www.yahoo.co.jp/
     echo *****************************************************************
     set connectID=""
-    set /P connectID="ï¿½Ú‘ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í‚ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½[Ex:00]ï¿½F"
+    set /P connectID="Ú‘±æ‚ğ“ü—Í‚µ‚Ä‚­‚¾‚³‚¢[Ex:00]F"
 
     if %connectID%==00 ( 
         set connectURL=https://www.google.com/
@@ -89,64 +88,64 @@ REM === ï¿½Ú‘ï¿½ï¿½ï¿½Iï¿½ï¿½
         set connectURL=https://www.yahoo.co.jp/
     ) else (
         cls
-        call %commonLogBat% %cmdName% ERROR [%userID%]:ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½ï¿½[%connectID%]ï¿½ÌÚ‘ï¿½ï¿½ï¿½Í“oï¿½^ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½
+        call %commonLogBat% %cmdName% ERROR [%userID%]:‘I‘ğ‚µ‚½[%connectID%]‚ÌÚ‘±æ‚Í“o˜^‚³‚ê‚Ä‚¢‚Ü‚¹‚ñ
         goto SELECT-CONNECT
     )
-    call %commonLogBat% %cmdName% INFO [%userID%]:[%connectURL%]ï¿½ÉÚ‘ï¿½ï¿½ï¿½ï¿½Ü‚ï¿½
+    call %commonLogBat% %cmdName% INFO [%userID%]:[%connectURL%]‚ÉÚ‘±‚µ‚Ü‚·
 exit /b
 
 
 REM ========================================
-REM === Proxyï¿½İ’ï¿½
+REM === Proxyİ’è
 :IE-PROXY-SETTING
-    call %commonLogBat% %cmdName% INFO [%userID%]:Proxyï¿½İ’ï¿½ï¿½ï¿½ï¿½ï¿½Ü‚ï¿½
+    call %commonLogBat% %cmdName% INFO [%userID%]:Proxyİ’è‚ğ‚µ‚Ü‚·
     
     reg add "HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings" /f /v ProxyEnable /t reg_dword /d 1
     if !errorFlag! neq 0 (
-        call %commonLogBat% %cmdName% ERROR [%userID%]:Proxyï¿½İ’ï¿½ï¿½ONï¿½É‚Å‚ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½Å‚ï¿½ï¿½ï¿½
+        call %commonLogBat% %cmdName% ERROR [%userID%]:Proxyİ’è‚ğON‚É‚Å‚«‚Ü‚¹‚ñ‚Å‚µ‚½
     ) else (
-        call %commonLogBat% %cmdName% INFO [%userID%]:Proxyï¿½İ’ï¿½ï¿½ONï¿½É‚ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½
+        call %commonLogBat% %cmdName% INFO [%userID%]:Proxyİ’è‚ğON‚É‚µ‚Ü‚µ‚½
     )
 
     reg add "HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings" /f /v ProxyServer /t reg_sz /d %proxySrv%
     if !errorFlag! neq 0 (
-        call %commonLogBat% %cmdName% ERROR [%userID%]:Proxyï¿½Tï¿½[ï¿½o[%proxySrv%]ï¿½ï¿½oï¿½^ï¿½Å‚ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½Å‚ï¿½ï¿½ï¿½
+        call %commonLogBat% %cmdName% ERROR [%userID%]:ProxyƒT[ƒo[%proxySrv%]‚ğ“o˜^‚Å‚«‚Ü‚¹‚ñ‚Å‚µ‚½
     ) else (
-        call %commonLogBat% %cmdName% INFO [%userID%]:Proxyï¿½Tï¿½[ï¿½o[%proxySrv%]ï¿½ï¿½oï¿½^ï¿½ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½
+        call %commonLogBat% %cmdName% INFO [%userID%]:ProxyƒT[ƒo[%proxySrv%]‚ğ“o˜^‚µ‚Ü‚µ‚½
     )
 
     reg add "HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings" /f /v ProxyOverride /t reg_sz /d "<local>"
     if !errorFlag! neq 0 (
-        call %commonLogBat% %cmdName% ERROR [%userID%]:Proxyï¿½ÎÛŠOï¿½İ’ï¿½[local]ï¿½ï¿½oï¿½^ï¿½Å‚ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½Å‚ï¿½ï¿½ï¿½
+        call %commonLogBat% %cmdName% ERROR [%userID%]:Proxy‘ÎÛŠOİ’è[local]‚ğ“o˜^‚Å‚«‚Ü‚¹‚ñ‚Å‚µ‚½
     ) else (
-        call %commonLogBat% %cmdName% INFO [%userID%]:Proxyï¿½ÎÛŠOï¿½İ’ï¿½[local]ï¿½ï¿½oï¿½^ï¿½ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½
+        call %commonLogBat% %cmdName% INFO [%userID%]:Proxy‘ÎÛŠOİ’è[local]‚ğ“o˜^‚µ‚Ü‚µ‚½
     )
 exit /b
 
 REM ========================================
-REM === IEï¿½Nï¿½ï¿½
+REM === IE?¿½N?¿½?¿½
 :IE-START
-    call %commonLogBat% %cmdName% INFO [%userID%]:IEï¿½ï¿½ï¿½Nï¿½ï¿½ï¿½ï¿½ï¿½Ü‚ï¿½
+    call %commonLogBat% %cmdName% INFO [%userID%]:IE‚ğ‹N“®‚µ‚Ü‚·
     "C:\Program Files\Internet Explorer\iexplore.exe" %connectURL%
 exit /b
 
 REM ========================================
-REM === Proxyï¿½İ’ï¿½ï¿½ï¿½ï¿½
+REM === Proxy?¿½İ’ï¿½?¿½?¿½?¿½
 :NO-IE-PROXY-SETTING
-    call %commonLogBat% %cmdName% INFO [%userID%]:Proxyï¿½İ’ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ü‚ï¿½
+    call %commonLogBat% %cmdName% INFO [%userID%]:Proxyİ’è‰ğœ‚µ‚Ü‚·
     reg add "HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings" /f /v ProxyEnable /t reg_dword /d 0
     if !errorFlag! neq 0 (
-        call %commonLogBat% %cmdName% ERROR [%userID%]:Proxyï¿½İ’ï¿½ï¿½OFFï¿½É‚Å‚ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½Å‚ï¿½ï¿½ï¿½
+        call %commonLogBat% %cmdName% ERROR [%userID%]:Proxyİ’è‚ğOFF‚É‚Å‚«‚Ü‚¹‚ñ‚Å‚µ‚½
     ) else (
-        call %commonLogBat% %cmdName% INFO [%userID%]:Proxyï¿½İ’ï¿½ï¿½OFFï¿½É‚ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½
+        call %commonLogBat% %cmdName% INFO [%userID%]:Proxyİ’è‚ğOFF‚É‚µ‚Ü‚µ‚½
     )
 exit /b
 
 REM ========================================
 REM === END-RTN
 :END-RTN
-    call %commonLogBat% %cmdName% INFO [%userID%]:IEï¿½ï¿½ÆIï¿½ï¿½
-    echo ï¿½Lï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÆIï¿½ï¿½ï¿½ï¿½ï¿½Ü‚ï¿½
+    call %commonLogBat% %cmdName% INFO [%userID%]:IEì‹ÆI—¹
+    echo ƒL[‚ğ‰Ÿ‚·‚ÆI—¹‚µ‚Ü‚·
     set /P input=
     set input=
     
