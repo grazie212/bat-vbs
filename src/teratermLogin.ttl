@@ -1,0 +1,41 @@
+;==============================================
+;; 接続先ホスト／ユーザ名／パスワード設定
+HOSTADDR = 'ホスト名を入力'
+USERNAME = 'ユーザ名'
+PASSWORD = 'パスワード'
+;============================================== 
+;; ①コマンド組立て
+COMMAND = HOSTADDR
+strconcat COMMAND ':22 /ssh /2 /auth=password /user='
+strconcat COMMAND USERNAME
+strconcat COMMAND ' /passwd='
+strconcat COMMAND PASSWORD
+
+;; ②接続
+connect COMMAND
+
+LOGNAME = 'ログ出力先'
+strconcat LOGNAME '%Y%m%d_%H%M%S_'
+strconcat LOGNAME HOSTADDR
+strconcat LOGNAME '.log'
+loginfo logfilename
+
+if result == -1 then
+    ;; ログは取得はされていないので、そのままログ取得を開始
+    logopen LOGNAME 0 0 1 1
+else
+    ;; ログが取得中の為、一旦停止してから再度ログ取得を開始
+    logclose
+    logopen LOGNAME 0 0 1 1
+endif
+
+; タイトルバーをログインサーバ名に変更
+int2str strI 1
+TITLE = HOSTADDR
+strconcat TITLE ' <'
+strconcat TITLE strI
+strconcat TITLE '>'
+settitle TITLE
+
+;; ③マクロ終了
+end
