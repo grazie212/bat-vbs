@@ -2,6 +2,22 @@
 Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
 
+set-variable -name exitRc -value 99 -option constant
+set-variable -name normalRC -value 0 -option constant
+set-variable -name initValue -value "None" -option constant
+
+# ジョブコードを配列で返す
+function jobList {
+    $jobCodeList = @("会議",
+                    "設計",
+                    "検証",
+                    "構築",
+                    "テスト",
+                    "運用",
+                    "雑務")
+    return $jobCodeList
+}
+
 function startForm {
     param (
         [Datetime]$Date = (Get-Date) #現在日時を初期値に設定
@@ -44,7 +60,7 @@ function startForm {
     $listBox.Size = New-Object System.Drawing.Size(260,20)
     $listBox.Height = 80
 
-    $listContent = @("会議","設計","検証","構築","テスト","運用","雑務")
+    $listContent = jobList
     foreach ($lc in $listContent){
         [void] $listBox.Items.Add($lc)
     }
@@ -69,7 +85,7 @@ function startForm {
     # Windows でフォームを表示
     $result = $form.ShowDialog()
     # 入力結果を代入
-    [string[]]$rtnArr = @("None","None")
+    [string[]]$rtnArr = @($initValue,$initValue)
     if ($result -eq [System.Windows.Forms.DialogResult]::OK){
         $listitem = $listBox.SelectedItem
         $rtnArr[0] = $listitem
@@ -85,7 +101,7 @@ function stopForm([string]$args1, [array]$args2) {
 
     # フォーム クラスの定義
     $endform = New-Object System.Windows.Forms.Form
-    $endform.Text = 'Select a Computer'
+    $endform.Text = 'Continue or Exit'
     $endform.Size = New-Object System.Drawing.Size(300,200)
     $endform.StartPosition = 'CenterScreen'
 
@@ -93,7 +109,7 @@ function stopForm([string]$args1, [array]$args2) {
     # ラベルのテキストをウィンドウ上に用意
     $endlabel = New-Object System.Windows.Forms.Label
     $endlabel.Location = New-Object System.Drawing.Point(10,20)
-    $endlabel.Size = New-Object System.Drawing.Size(280,20)
+    $endlabel.Size = New-Object System.Drawing.Size(280,40)
     $endlabel.Text = $startCode
     $endform.Controls.Add($endlabel)
 
@@ -121,9 +137,9 @@ function stopForm([string]$args1, [array]$args2) {
     # Windows でフォームを表示
     $endresult = $endform.ShowDialog()
     if ($endresult -eq [System.Windows.Forms.DialogResult]::OK){
-        return 0
+        return $normalRC
     } else {
-        return 99
+        return $exitRc
     }
 }
 
@@ -135,20 +151,21 @@ while ($true) {
     $jobArr = startForm
     $startDate = Get-Date
 
-    $rc = stopForm $startDate $jobArr
-    $endDate = Get-Date
-
-    # 差分確認
-    $timeDiff = $endDate - $startDate
-    $timeDiffString = [string]$timeDiff
-    $timeDiffSplit = $timeDiffString.Split(".")
-
-    # ファイル出力
-    $printText = [string]$startDate + "," + [string]$endDate + "," + $jobArr[0] + "," + $timeDiffSplit[0] + "," + $jobArr[1]
-    Write-Output $printText | Add-Content $filename -Encoding String
-
-    if ($rc -eq 99) {
-        break
+    if ($jobArr[0] -ne $initValue) {
+        $rc = stopForm $startDate $jobArr
+        $endDate = Get-Date
+    
+        # 差分確認
+        $timeDiff = $endDate - $startDate
+        $timeDiffString = [string]$timeDiff
+        $timeDiffSplit = $timeDiffString.Split(".")
+    
+        # ファイル出力
+        $printText = [string]$startDate + "," + [string]$endDate + "," + $jobArr[0] + "," + $timeDiffSplit[0] + "," + $jobArr[1]
+        Write-Output $printText | Add-Content $filename -Encoding String
+    
+        if ($rc -eq $exitRc) {
+            break
+        }
     }
 }
-
