@@ -2,13 +2,14 @@
 Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
 
-set-variable -name exitRc -value 99 -option constant
-set-variable -name normalRC -value 0 -option constant
+set-variable -name exitRc -value "Exit" -option constant
+set-variable -name normalRC -value "Continue" -option constant
 set-variable -name initValue -value "None" -option constant
 
 # ジョブコードを配列で返す
 function jobList {
     $jobCodeList = @("会議",
+                    "レビュー",
                     "設計",
                     "検証",
                     "構築",
@@ -19,17 +20,13 @@ function jobList {
 }
 
 function startForm {
-    param (
-        [Datetime]$Date = (Get-Date) #現在日時を初期値に設定
-    )
-    
     # フォーム クラスの定義
     $form = New-Object System.Windows.Forms.Form
     $form.Text = 'Select job'
     $form.Size = New-Object System.Drawing.Size(300,250)
     $form.StartPosition = 'CenterScreen'
 
-    #  [OK] ボタンを作成
+    # [OK] ボタンを作成
     $OKButton = New-Object System.Windows.Forms.Button
     $OKButton.Location = New-Object System.Drawing.Point(75,180)
     $OKButton.Size = New-Object System.Drawing.Size(75,23)
@@ -85,14 +82,14 @@ function startForm {
     # Windows でフォームを表示
     $result = $form.ShowDialog()
     # 入力結果を代入
-    [string[]]$rtnArr = @($initValue,$initValue)
+    [string[]]$startFormRtnArr = @($initValue,$initValue)
     if ($result -eq [System.Windows.Forms.DialogResult]::OK){
         $listitem = $listBox.SelectedItem
-        $rtnArr[0] = $listitem
-        $rtnArr[1] = $textBox.Text
-        return $rtnArr
+        $startFormRtnArr[0] = $listitem
+        $startFormRtnArr[1] = $textBox.Text
+        return $startFormRtnArr
     } else {
-        return $rtnArr
+        return $startFormRtnArr
     }
 }
 
@@ -113,7 +110,7 @@ function stopForm([string]$args1, [array]$args2) {
     $endlabel.Text = $startCode
     $endform.Controls.Add($endlabel)
 
-    #  [終了] ボタンを作成
+    #  [完了] ボタンを作成
     $ENDButton = New-Object System.Windows.Forms.Button
     $ENDButton.Location = New-Object System.Drawing.Point(75,120)
     $ENDButton.Size = New-Object System.Drawing.Size(75,23)
@@ -131,28 +128,50 @@ function stopForm([string]$args1, [array]$args2) {
     $endform.AcceptButton = $KITAKUButton
     $endform.Controls.Add($KITAKUButton)
 
+    # ラベルのテキストをウィンドウ上に用意
+    $stopTextBoxLabel = New-Object System.Windows.Forms.Label
+    $stopTextBoxLabel.Location = New-Object System.Drawing.Point(10,70)
+    $stopTextBoxLabel.Size = New-Object System.Drawing.Size(280,20)
+    $stopTextBoxLabel.Text = '成果物:'
+    $endform.Controls.Add($stopTextBoxLabel)
+    
+    # 作業メモ入力ボックスの設定
+    $stopTextBox = New-Object System.Windows.Forms.TextBox 
+    $stopTextBox.Location = New-Object System.Drawing.Point(10,90) 
+    $stopTextBox.Size = New-Object System.Drawing.Size(260,20)
+    $endform.Controls.Add($stopTextBox) 
+
     # フォームを開くときに他のウィンドウとダイアログ ボックスの最上部に開くよう、Windows に指示
     $endform.Topmost = $true
 
     # Windows でフォームを表示
     $endresult = $endform.ShowDialog()
+    # 入力結果を代入
+    [string[]]$stopFormRtnArr = @($initValue,$initValue)
     if ($endresult -eq [System.Windows.Forms.DialogResult]::OK){
-        return $normalRC
+        $stopFormRtnArr[0] = $normalRC
+        $stopFormRtnArr[1] = $stopTextBox.Text
     } else {
-        return $exitRc
+        $stopFormRtnArr[0] = $exitRc
+        $stopFormRtnArr[1] = $stopTextBox.Text
     }
+    return $stopFormRtnArr
 }
 
+# ======================================================
 # メイン処理
+# ======================================================
+# csvファイル出力先設定
 $formatted_date = (Get-Date).ToString("yyyyMM")
 [string]$filename = "D:\${formatted_date}_作業実績.csv"
 
+# アプリケーション起動
 while ($true) {
     $jobArr = startForm
     $startDate = Get-Date
 
     if ($jobArr[0] -ne $initValue) {
-        $rc = stopForm $startDate $jobArr
+        $rcArr = stopForm $startDate $jobArr
         $endDate = Get-Date
     
         # 差分確認
@@ -161,10 +180,11 @@ while ($true) {
         $timeDiffSplit = $timeDiffString.Split(".")
     
         # ファイル出力
-        $printText = [string]$startDate + "," + [string]$endDate + "," + $jobArr[0] + "," + $timeDiffSplit[0] + "," + $jobArr[1]
+        $printText = [string]$startDate + "," + [string]$endDate + "," + $jobArr[0] + "," + $timeDiffSplit[0] + "," + $jobArr[1] + "," + $rcArr[1]
         Write-Output $printText | Add-Content $filename -Encoding String
     
-        if ($rc -eq $exitRc) {
+        # 帰宅ボタンが押されたときアプリケーション終了
+        if ($rcArr[0] -eq $exitRc) {
             break
         }
     }
